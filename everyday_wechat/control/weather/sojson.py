@@ -117,7 +117,7 @@ city_dict = {
     '大埔县': '101280404', '丰顺县': '101280406', '五华县': '101280408', '平远县': '101280407', '蕉岭县': '101280403',
     '英德市': '101281307', '连州市': '101281303', '佛冈县': '101281306', '阳山县': '101281305', '清新县': '101281308',
     '连山县': '101281304', '连南县': '101281302', '南澳县': '101280504', '潮阳区': '101280502', '澄海区': '101280503',
-    '陆丰市': '101282103', '海丰县': '101282102', '陆河县': '101282104', '曲江区': '101280209', '浈江区': '101280210',
+    '陆丰市': '101282103', '海丰县': '101282102', '陆河县': '101282104', '浈江区': '101280210',
     '武江区': '101280211', '曲江区': '101280209', '乐昌市': '101280205', '南雄市': '101280207', '始兴县': '101280203',
     '仁化县': '101280206', '翁源县': '101280204', '新丰县': '101280208', '乳源县': '101280202', '阳春市': '101281802',
     '阳西县': '101281804', '阳东县': '101281803', '罗定市': '101281402', '新兴县': '101281403', '郁南县': '101281404',
@@ -523,43 +523,45 @@ def get_sojson_weather(city_name):
     weather_url = 'http://t.weather.sojson.com/api/weather/city/{}'.format(city_code)
     try:
         resp = requests.get(url=weather_url)
-        weather_dict = resp.json()
-        # 今日天气
-        # {
-        # "sunrise": "04:45",
-        # "high": "高温 34.0℃",
-        # "low": "低温 25.0℃",
-        # "sunset": "19:37",
-        # "aqi": 145,
-        # "ymd": "2019-06-12",
-        # "week": "星期三",
-        # "fx": "西南风",
-        # "fl": "3-4级",
-        # "type": "多云",
-        # "notice": "阴晴之间，谨防紫外线侵扰"
-        # }
-        today_weather = weather_dict.get('data').get('forecast')[0]
+        if resp.status_code == 200:
+            weather_dict = resp.json()
+            # 今日天气
+            # {
+            # "sunrise": "04:45",
+            # "high": "高温 34.0℃",
+            # "low": "低温 25.0℃",
+            # "sunset": "19:37",
+            # "aqi": 145,
+            # "ymd": "2019-06-12",
+            # "week": "星期三",
+            # "fx": "西南风",
+            # "fl": "3-4级",
+            # "type": "多云",
+            # "notice": "阴晴之间，谨防紫外线侵扰"
+            # }
+            today_weather = weather_dict.get('data').get('forecast')[0]
 
-        # display = ['ymd', 'week', 'type', 'fx', 'fl', 'high', 'low', 'notice']
-        # weather_info = ' '.join(today_weather[p] for p in display if today_weather.get(p, None))
-        # print(weather_info)
+            # display = ['ymd', 'week', 'type', 'fx', 'fl', 'high', 'low', 'notice']
+            # weather_info = ' '.join(today_weather[p] for p in display if today_weather.get(p, None))
+            # print(weather_info)
 
-        weather_info = city_name + '天气预报\n'
-        weather_info = weather_info + today_weather['ymd'] + '，' + today_weather['week'] + '\n'
-        weather_info = weather_info + '【天气预报】' + today_weather['type'] + '\n'
-        weather_info = weather_info + '【今日温度】' + today_weather['low'] + '，' + today_weather['high'] + '\n'
-        weather_info = weather_info + '【今日风速】' + today_weather['fx'] + today_weather['fl'] + '\n'
-        weather_info = weather_info + '【出行提示】' + today_weather['notice']
+            weather_info = city_name + '天气预报\n'
 
-        return weather_info
+            # weather_info = weather_info + today_weather['ymd'] + '，' + today_weather['week'] + '\n'
+            weather_info = weather_info + '【今日天气】' + today_weather['type'] + '\n'
+            weather_info = weather_info + '【今日温度】' + today_weather['low'] + ',' + today_weather['high'] + '\n'
+            weather_info = weather_info + '【今日风速】' + today_weather['fx'] + today_weather['fl'] + '\n'
+            weather_info = weather_info + '【出行提示】' + today_weather['notice']
+
+            return weather_info
 
     except Exception as exception:
-        print(exception)
+        print(str(exception))
         return None
 
 get_today_weather = get_sojson_weather
 
 if __name__ == '__main__':
-    we = get_today_weather('青岛')
-    print(we)
+    # we = get_today_weather('青岛')
+    # print(we)
     pass
